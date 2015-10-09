@@ -4,6 +4,7 @@ module.exports = function (vertexCount, name) {
 
 	var graph = this;
 
+	var vertices = new Array(vertexCount);
     var edges = [];
 
     var initEdges = function(edges) {
@@ -16,6 +17,12 @@ module.exports = function (vertexCount, name) {
     }
 
 	initEdges(edges);
+
+	this.getVertex = function(i) { return vertices[i]; };
+
+	this.setVertex = function(i, value) {
+		vertices[i] = value;
+	};
 
 	this.getVertexCount = function () { return vertexCount; }
 
@@ -54,5 +61,21 @@ module.exports = function (vertexCount, name) {
 					action(i, j, vertexCount);
 			}
 		}
+	}
+	
+	this.getVertexCoords = function (i, radius, scale) {
+
+		var vertex = graph.getVertex(i);
+		if (vertex && vertex.x && vertex.y)
+			return { x: vertex.x * scale.x, y: vertex.y * scale.y };
+
+		var vertexAngle = 2 * Math.PI * (i / vertexCount);
+
+		var center = { x: 50 * scale.x, y: 50 * scale.y };
+		
+		return {
+			x: center.x + (center.x - radius) * Math.sin(vertexAngle),
+			y: center.y - (center.y - radius) * Math.cos(vertexAngle),
+		};
 	}
 };

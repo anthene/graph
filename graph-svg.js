@@ -1,41 +1,31 @@
 var js2xmlparser = require('js2xmlparser');
 
 module.exports = function (graph) {
-	var side = 500;
+	var scale = { x: 7, y: 7 };
 	var raduis = 10;
-	var half = side/2;
-	var width = side;
-	var height = side;
+	var width = 100 * scale.x;
+	var height = 100 * scale.x;
 
 	var nodes = [];
 	var edges = [];
 
-	var getVertexCoords = function (i, vertexCount) {
-		var vertexAngle = 2 * Math.PI * (i / vertexCount);
+	graph.forEachVertex(function (i) {
 
-		return {
-			x: half + (half - raduis) * Math.sin(vertexAngle),
-			y: half - (half - raduis) * Math.cos(vertexAngle),
-		};
-	}
-
-	graph.forEachVertex(function (i, vertexCount) {
-
-		var coords = getVertexCoords(i, vertexCount);
+		var coords = graph.getVertexCoords(i, scale, raduis);
 
 		nodes.push({
 			'@': {
 				cx: coords.x,
 				cy: coords.y,
-				r: raduis,
+				r: raduis
 			}
 		});
 	});
 
-	graph.forEachEdge(function (i, j, vertexCount) {
+	graph.forEachEdge(function (i, j) {
 
-		var iCoords = getVertexCoords(i, vertexCount);
-		var jCoords = getVertexCoords(j, vertexCount);
+		var iCoords = graph.getVertexCoords(i, scale, raduis);
+		var jCoords = graph.getVertexCoords(j, scale, raduis);
 
 		edges.push({
 			'@': {
@@ -58,5 +48,5 @@ module.exports = function (graph) {
 			},
 			line: edges,
 			circle: nodes
-		})
+		});
 };

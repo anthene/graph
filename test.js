@@ -35,25 +35,15 @@ assert.equal(4, num);
 // toSvg
 fs.writeFile('graph.svg', toSvg(new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).setEdge(0, 3)));
 
-// fromXml
-var testDirName = 'test-data';
-fs.readdir(testDirName, function (err, files) {
+// getVertex
+var testDirName = 'test-data'
+fs.readFile(path.join(testDirName, 'points.xml'), 'utf8', function (err, xml) {
 	if (err) throw err;
 	
-	for (var i = 0; i < files.length; i++) {
-		var file = files[i];
+	fromXml(xml, function (err, graph) {
+		if (err) throw err;
 		
-		if (path.extname(file) === '.xml') {
-			
-			fs.readFile(path.join(testDirName, file), 'utf8', function (err, xml) {
-				if (err) throw err;
-				
-				fromXml(xml, function (err, graph) {
-					if (err) throw err;
-					
-					fs.writeFile(graph.name + '.svg', toSvg(graph));
-				});
-			});
-		}
-	}
+		assert.deepEqual({ x:10, y:10 }, graph.getVertex(0));
+		assert.deepEqual({ x:250, y:250 }, graph.getVertex(1));
+	});
 });
