@@ -1,0 +1,11 @@
+{
+  "name": "graph",
+  "dependencies": {
+    "js2xmlparser": "^1.0.0",
+    "xml2js": "^0.4.12"
+  },
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js"
+  }
+}

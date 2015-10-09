@@ -1,2 +1,2 @@
-node test.js
+npm start
 pause
