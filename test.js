@@ -44,6 +44,6 @@ fs.readFile(path.join(testDirName, 'points.xml'), 'utf8', function (err, xml) {
 		if (err) throw err;
 		
 		assert.deepEqual({ x:10, y:10 }, graph.getVertex(0));
-		assert.deepEqual({ x:250, y:250 }, graph.getVertex(1));
+		assert.deepEqual({ x:90, y:90 }, graph.getVertex(1));
 	});
 });

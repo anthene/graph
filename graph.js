@@ -63,7 +63,9 @@ module.exports = function (vertexCount, name) {
 		}
 	}
 	
-	this.getVertexCoords = function (i, radius, scale) {
+	this.getVertexCoords = function (i, scale) {
+
+		var margin = 5;
 
 		var vertex = graph.getVertex(i);
 		if (vertex && vertex.x && vertex.y)
@@ -72,10 +74,12 @@ module.exports = function (vertexCount, name) {
 		var vertexAngle = 2 * Math.PI * (i / vertexCount);
 
 		var center = { x: 50 * scale.x, y: 50 * scale.y };
+
+		var radius = Math.sqrt(1 / (Math.pow(Math.sin(vertexAngle) / ((50 - margin) * scale.x) , 2) + Math.pow(Math.cos(vertexAngle) / ((50 - margin) * scale.y) , 2)));
 		
 		return {
-			x: center.x + (center.x - radius) * Math.sin(vertexAngle),
-			y: center.y - (center.y - radius) * Math.cos(vertexAngle),
+			x: center.x + radius * Math.sin(vertexAngle),
+			y: center.y - radius * Math.cos(vertexAngle),
 		};
 	}
 };

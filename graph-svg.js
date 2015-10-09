@@ -4,14 +4,14 @@ module.exports = function (graph) {
 	var scale = { x: 7, y: 7 };
 	var raduis = 10;
 	var width = 100 * scale.x;
-	var height = 100 * scale.x;
+	var height = 100 * scale.y;
 
 	var nodes = [];
 	var edges = [];
 
 	graph.forEachVertex(function (i) {
 
-		var coords = graph.getVertexCoords(i, scale, raduis);
+		var coords = graph.getVertexCoords(i, scale);
 
 		nodes.push({
 			'@': {
@@ -24,8 +24,8 @@ module.exports = function (graph) {
 
 	graph.forEachEdge(function (i, j) {
 
-		var iCoords = graph.getVertexCoords(i, scale, raduis);
-		var jCoords = graph.getVertexCoords(j, scale, raduis);
+		var iCoords = graph.getVertexCoords(i, scale);
+		var jCoords = graph.getVertexCoords(j, scale);
 
 		edges.push({
 			'@': {

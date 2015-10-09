@@ -6,14 +6,12 @@ module.exports = function (xml, callback) {
 		try {
 			var graph = new Graph(parseInt(result.edges.$.vertexCount), result.edges.$.name);
 
-			if (result.edges.vertex) {
-				for (var i = 0; i < result.edges.vertex.length; i++) {
-					var vertex = result.edges.vertex[i].$;
-					graph.setVertex(i, vertex);
-				}
+			for (var i = 0; result.edges.vertex && i < result.edges.vertex.length; i++) {
+				var vertex = result.edges.vertex[i].$;
+				graph.setVertex(i, vertex);
 			}
 
-			for (var i = 0; i < result.edges.edge.length; i++) {
+			for (var i = 0; result.edges.edge && i < result.edges.edge.length; i++) {
 				var edge = result.edges.edge[i].$;
 				graph.setEdge(parseInt(edge.firstVertex), parseInt(edge.secondVertex));
 			}
