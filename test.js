@@ -1,7 +1,9 @@
 var Graph = require('./graph');
 var toSvg = require('./graph-svg');
+var fromXml = require('./graph-xml');
 var assert = require('assert');
 var fs = require('fs');
+var path = require('path');
 
 // getVertexCount
 assert.equal(3, new Graph(3).getVertexCount());
@@ -33,3 +35,25 @@ assert.equal(4, num);
 // toSvg
 fs.writeFile('graph.svg', toSvg(new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).setEdge(0, 3)));
 
+// fromXml
+var testDirName = 'test-data';
+fs.readdir(testDirName, function (err, files) {
+	if (err) throw err;
+	
+	for (var i = 0; i < files.length; i++) {
+		var file = files[i];
+		
+		if (path.extname(file) === '.xml') {
+			
+			fs.readFile(path.join(testDirName, file), 'utf8', function (err, xml) {
+				if (err) throw err;
+				
+				fromXml(xml, function (err, graph) {
+					if (err) throw err;
+					
+					fs.writeFile(graph.name + '.svg', toSvg(graph));
+				});
+			});
+		}
+	}
+});

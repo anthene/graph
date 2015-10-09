@@ -1,4 +1,6 @@
-module.exports = function (vertexCount) {
+module.exports = function (vertexCount, name) {
+
+	this.name = name;
 
 	var graph = this;
 
