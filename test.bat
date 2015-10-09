@@ -1,2 +1,2 @@
-npm test
+call npm test
 pause

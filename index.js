@@ -1,9 +1,12 @@
 var Graph = require('./graph');
-var toSvg = require('./graph-svg');
+var toSvg = require('./graph-svg').toSvg;
 var fromXml = require('./graph-xml');
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
+
+var runResultDir = 'run-results';
+fs.mkdirSync(runResultDir);
 
 // fromXml
 var testDirName = 'test-data';
@@ -21,7 +24,7 @@ fs.readdir(testDirName, function (err, files) {
 				fromXml(xml, function (err, graph) {
 					if (err) throw err;
 					
-					fs.writeFile(graph.name + '.svg', toSvg(graph));
+					fs.writeFile(path.join(runResultDir, graph.name + '.svg'), toSvg(graph));
 				});
 			});
 		}

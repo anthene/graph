@@ -1,9 +1,13 @@
 var Graph = require('./graph');
-var toSvg = require('./graph-svg');
+var toSvg = require('./graph-svg').toSvg;
+var toLeveledSvg = require('./graph-svg').toLeveledSvg;
 var fromXml = require('./graph-xml');
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
+
+var testResultDir = 'test-results';
+fs.mkdirSync(testResultDir);
 
 // getVertexCount
 assert.equal(3, new Graph(3).getVertexCount());
@@ -33,11 +37,11 @@ new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).forEachEdge
 assert.equal(4, num);
 
 // toSvg
-fs.writeFile('graph.svg', toSvg(new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).setEdge(0, 3)));
+fs.writeFile(path.join(testResultDir, 'graph.svg'), toSvg(new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).setEdge(0, 3)));
 
 // getVertex
 var testDirName = 'test-data'
-fs.readFile(path.join(testDirName, 'points.xml'), 'utf8', function (err, xml) {
+fs.readFile(path.join(testDirName, 'k2.xml'), 'utf8', function (err, xml) {
 	if (err) throw err;
 	
 	fromXml(xml, function (err, graph) {
@@ -45,5 +49,34 @@ fs.readFile(path.join(testDirName, 'points.xml'), 'utf8', function (err, xml) {
 		
 		assert.deepEqual({ x:10, y:10 }, graph.getVertex(0));
 		assert.deepEqual({ x:90, y:90 }, graph.getVertex(1));
+	});
+});
+
+// getNeighbours
+assert.deepEqual(
+	[0, 3, 4],
+	new Graph(6).setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).getNeighbours(2));
+
+assert.deepEqual(
+	[1, 2],
+	new Graph(6).setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).getNeighbours(0));
+
+// getLevels
+assert.deepEqual(
+	[[0], [1, 2], [3, 4], [5]],
+	new Graph(6).setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).setEdge(4, 5).getLevels(0));
+
+// toLeveledSvg
+fs.writeFile(path.join(testResultDir, 'levs0.svg'), toLeveledSvg(new Graph(6, 'levs').setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).setEdge(4, 5), 0));
+
+fs.writeFile(path.join(testResultDir, 'levs5.svg'), toLeveledSvg(new Graph(6, 'levs').setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).setEdge(4, 5), 5));
+
+fs.readFile(path.join(testDirName, 'k3,3.xml'), 'utf8', function (err, xml) {
+	if (err) throw err;
+	
+	fromXml(xml, function (err, graph) {
+		if (err) throw err;
+		
+		fs.writeFile(path.join(testResultDir, 'k3,3_levs.svg'), toLeveledSvg(graph, 0));
 	});
 });

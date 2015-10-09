@@ -1,5 +1,7 @@
 obj/*
 node_modules/*
+test-results/*
+run-results/*
 .ntvs_analysis.dat
 *.njsproj
 *.sln
