@@ -4,6 +4,7 @@ module.exports = function (vertexCount, name) {
 
 	var vertices = [];
     var edges = [];
+    var circles = [[]];
 
     var initEdges = function(edges) {
 		for (var i = 0; i < vertexCount; i++) {
@@ -15,6 +16,10 @@ module.exports = function (vertexCount, name) {
     }
 
 	initEdges(edges);
+
+	for (var i = 0; i < vertexCount; i++) {
+		circles[0].push(i);
+	}
 
 	this.getVertex = function(i) { return vertices[i]; };
 
@@ -75,11 +80,14 @@ module.exports = function (vertexCount, name) {
 			return { x: vertex.x * scale.x, y: vertex.y * scale.y };
 
 		var margin = 5;
-		var vertexAngle = 2 * Math.PI * (i / vertexCount);
+		var circleIndex = this.getVertexCircle(i);
+		//console.log(circleIndex);
+		var vertexAngle = 2 * Math.PI * (i / circles[circleIndex].length);
 		var center = { x: 50 * scale.x, y: 50 * scale.y };
 		var radiusX = (50 - margin) * scale.x;
 		var radiusY = (50 - margin) * scale.y;
 		var radius = Math.sqrt(1 / (Math.pow(Math.sin(vertexAngle) / radiusX , 2) + Math.pow(Math.cos(vertexAngle) / radiusY , 2)));
+		radius = radius / (circleIndex + 1);
 		
 		return {
 			x: center.x + radius * Math.sin(vertexAngle),
@@ -136,4 +144,30 @@ module.exports = function (vertexCount, name) {
 
 		return result;
 	};
+
+	this.getVertexCircle = function (i) {
+		for (var j = 0; j < circles.length; j++) {
+			if (!circles[j]) circles[j] = [];
+			if (circles[j].indexOf(i) > -1)
+				return j;
+		}
+
+		throw new Error('Circles damaged.')
+	}
+
+	this.setVertexCircle = function (i, circleIndex) {
+
+		for (var j = 0; j < circles.length; j++) {
+			if (!circles[j]) circles[j] = [];
+			var index = circles[j].indexOf(i);
+			if (index > -1) {
+				circles[j].splice(index, 1);
+				if (!circles[circleIndex]) circles[circleIndex] = [];
+				circles[circleIndex].push(i);
+				return this;
+			}
+		}
+
+		throw new Error('Circles damaged.')
+	}
 };

@@ -7,7 +7,8 @@ var fs = require('fs');
 var path = require('path');
 
 var testResultDir = 'test-results';
-fs.mkdirSync(testResultDir);
+if (!fs.existsSync(testResultDir))
+	fs.mkdirSync(testResultDir);
 
 // getVertexCount
 assert.equal(3, new Graph(3).getVertexCount());
@@ -78,5 +79,19 @@ fs.readFile(path.join(testDirName, 'k3,3.xml'), 'utf8', function (err, xml) {
 		if (err) throw err;
 		
 		fs.writeFile(path.join(testResultDir, 'k3,3_levs.svg'), toLeveledSvg(graph, 0));
+	});
+});
+
+// getVertexCircle
+assert.equal(1, new Graph(2).setVertexCircle(1, 1).getVertexCircle(1));
+
+fs.readFile(path.join(testDirName, 'petersen.xml'), 'utf8', function (err, xml) {
+	if (err) throw err;
+	
+	fromXml(xml, function (err, graph) {
+		if (err) throw err;
+		
+		assert.equal(1, graph.getVertexCircle(2));
+		assert.equal(0, graph.getVertexCircle(5));
 	});
 });

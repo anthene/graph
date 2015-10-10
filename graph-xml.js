@@ -4,15 +4,17 @@ var Graph = require('./graph');
 module.exports = function (xml, callback) {
 	xml2js(xml, function (error, result) {
 		try {
-			var graph = new Graph(parseInt(result.edges.$.vertexCount), result.edges.$.name);
+			var graph = new Graph(parseInt(result.graph.$.vertexCount), result.graph.$.name);
 
-			for (var i = 0; result.edges.vertex && i < result.edges.vertex.length; i++) {
-				var vertex = result.edges.vertex[i].$;
+			for (var i = 0; result.graph.vertex && i < result.graph.vertex.length; i++) {
+				var vertex = result.graph.vertex[i].$;
 				graph.setVertex(i, vertex);
+				if (vertex.circle)
+					graph.setVertexCircle(i, parseInt(vertex.circle));
 			}
 
-			for (var i = 0; result.edges.edge && i < result.edges.edge.length; i++) {
-				var edge = result.edges.edge[i].$;
+			for (var i = 0; result.graph.edge && i < result.graph.edge.length; i++) {
+				var edge = result.graph.edge[i].$;
 				graph.setEdge(parseInt(edge.firstVertex), parseInt(edge.secondVertex));
 			}
 

@@ -6,7 +6,8 @@ var fs = require('fs');
 var path = require('path');
 
 var runResultDir = 'run-results';
-fs.mkdirSync(runResultDir);
+if (!fs.existsSync(runResultDir))
+	fs.mkdirSync(runResultDir);
 
 // fromXml
 var testDirName = 'test-data';
