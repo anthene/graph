@@ -116,6 +116,15 @@ assert.equal(true, new Graph(3).setEdge(0, 1).setEdge(2, 1).isConnected());
 
 assert.equal(true, new Graph(3).setEdge(0, 1).setEdge(2, 1).setEdge(2, 0).isConnected());
 
+// getBridges
+assert.throws(function () { new Graph(2).getBridges(); }, function (error) { return error.message === 'The graph is not connected'; });
+
+assert.deepStrictEqual([[0, 1]], new Graph(2).setEdge(0, 1).getBridges());
+
+assert.deepStrictEqual([[0, 1], [1, 2], [2, 3]], new Graph(4).setEdge(0, 1).setEdge(2, 3).setEdge(1, 2).getBridges());
+
+assert.deepStrictEqual([], new Graph(4).setEdge(0, 1).setEdge(2, 3).setEdge(1, 2).setEdge(0, 3).getBridges());
+
 /*
 // toSvg
 fs.writeFile(path.join(testResultDir, 'graph.svg'), toSvg(new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).setEdge(0, 3)));

@@ -198,4 +198,22 @@ module.exports = function (vertexCount, name) {
 		
 		return connectedAndCheckedCount === vertexCount;
 	};
+	
+	this.getBridges = function() {
+
+		if (!this.isConnected())
+			throw new Error('The graph is not connected');
+			
+		var graph = this;
+		var result = [];
+		
+		this.forEachEdge(function (i, j) {
+			graph.setEdge(i, j, false);
+			if (!graph.isConnected())
+				result.push([i, j]);
+			graph.setEdge(i, j);
+		});
+
+		return result;
+	};
 };
