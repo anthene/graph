@@ -113,6 +113,10 @@ module.exports = function (vertexCount, name) {
 	}
 
 	this.getLevels = function(i) {
+		
+		if (!this.isConnected())
+			throw new Error('The graph is not connected');
+		
 		var result = [];
 		var levelIndex = 0;
 		var level = [i];
@@ -157,5 +161,41 @@ module.exports = function (vertexCount, name) {
 		}
 
 		throw new Error('Circles damaged.')
-	}
+	};
+	
+	this.isConnected = function() {
+		var firstConnectedIndex, i;
+		var checkedVertices = [];
+		var connectedAndCheckedCount = 0;
+		checkedVertices[0] = 'connected'; // 'connected' means connected with 0 vertex
+		
+		do {
+			
+			firstConnectedIndex = undefined;
+			for (i = 0; firstConnectedIndex === undefined && i < checkedVertices.length; i++) {
+				if (checkedVertices[i] === 'connected')
+					firstConnectedIndex = i;
+			}
+			
+			if (firstConnectedIndex !== undefined) {
+				
+				checkedVertices[firstConnectedIndex] = 'connectedAndChecked';
+				
+				var neighbours = this.getNeighbours(firstConnectedIndex);
+				
+				for (i = 0; i < neighbours.length; i++) {
+					if (checkedVertices[neighbours[i]] === undefined)
+						checkedVertices[neighbours[i]] = 'connected';
+				}
+			}
+		}
+		while (firstConnectedIndex !== undefined)
+		
+		for (i = 0; i < checkedVertices.length; i++) {
+			if (checkedVertices[i] === 'connectedAndChecked')
+				connectedAndCheckedCount++;
+		}
+		
+		return connectedAndCheckedCount === vertexCount;
+	};
 };

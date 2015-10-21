@@ -93,11 +93,28 @@ assert.deepEqual(
 	[[0], [1, 2], [3, 4], [5]],
 	new Graph(6).setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).setEdge(4, 5).getLevels(0));
 
+assert.throws(function () { new Graph(2).getLevels(0); }, function (error) { return error.message === 'The graph is not connected'; });
+
+var mockGraph = new Graph(2);
+mockGraph.isConnected = function() { return false; };
+assert.throws(function () { mockGraph.setEdge(0, 1).getLevels(0); }, function (error) { return error.message === 'The graph is not connected'; });
+
 // getVertexCircle
 assert.equal(1, new Graph(2).setVertexCircle(1, 1).getVertexCircle(1));
 
 // setVertexCircle
 // todo:
+
+// isConnected
+assert.equal(false, new Graph(4).setEdge(0, 2).setEdge(2, 3).isConnected());
+
+assert.equal(false, new Graph(2).isConnected());
+
+assert.equal(true, new Graph(2).setEdge(0, 1).isConnected());
+
+assert.equal(true, new Graph(3).setEdge(0, 1).setEdge(2, 1).isConnected());
+
+assert.equal(true, new Graph(3).setEdge(0, 1).setEdge(2, 1).setEdge(2, 0).isConnected());
 
 /*
 // toSvg
