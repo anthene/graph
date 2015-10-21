@@ -6,49 +6,47 @@ module.exports = function (vertexCount, name) {
     var edges = [];
     var circles = [[]];
 
-    var initEdges = function(edges) {
-		for (var i = 0; i < vertexCount; i++) {
-			edges[i] = [];
-			for (var j = 0; j < vertexCount; j++) {
-				edges[i][j] = false;
-			}
+	for (var i = 0; i < vertexCount; i++) {
+		edges[i] = [];
+		for (var j = 0; j < vertexCount; j++) {
+			edges[i][j] = false;
 		}
-    }
-
-	initEdges(edges);
+	}
 
 	for (var i = 0; i < vertexCount; i++) {
 		circles[0].push(i);
 	}
 
-	this.getVertex = function(i) { return vertices[i]; };
+	this.getVertex = function(i) {
+
+        if (i >= vertexCount)
+            throw new Error('Vertex index must me less than ' + vertexCount);
+
+		return vertices[i];
+	};
 
 	this.setVertex = function(i, value) {
-		vertices[i] = value;
 
+        if (i >= vertexCount)
+            throw new Error('Vertex index must me less than ' + vertexCount);
+
+		vertices[i] = value;
 		return this;
 	};
 
 	this.getVertexCount = function () { return vertexCount; }
 
-	this.getEdge = function (i, j) {
-
-        if (i >= vertexCount || j >= vertexCount)
-            throw 'Incorrect i or j';
-
-		return edges[i][j];
-	}
+	this.getEdge = function (i, j) { return edges[i][j]; }
 
 	this.setEdge = function (i, j, value) {
-        
-        if (i >= vertexCount || j >= vertexCount)
-            throw 'Not good';
-        
-        if (i == j)
-            throw 'No loops';
 
-		edges[i][j] = !edges[i][j];
-		edges[j][i] = !edges[j][i];
+        if (i == j)
+            throw new Error('A graph cannot contain loops');
+			
+		if (value === undefined)
+			value = true;
+
+		edges[i][j] = edges[j][i] = value;
 
 		return this;
 	}
@@ -81,7 +79,6 @@ module.exports = function (vertexCount, name) {
 
 		var margin = 5;
 		var circleIndex = this.getVertexCircle(i);
-		//console.log(circleIndex);
 		var vertexAngle = 2 * Math.PI * (i / circles[circleIndex].length);
 		var center = { x: 50 * scale.x, y: 50 * scale.y };
 		var radiusX = (50 - margin) * scale.x;
@@ -103,15 +100,6 @@ module.exports = function (vertexCount, name) {
 		}
 
 		return neighbours;
-	};
-
-	var count = function(array) {
-		var result = 0;
-
-		for (var i = 0; i < array.length; i++)
-			result += array[i].length;
-
-		return result;
 	};
 
 	var arrDiff = function(a1, a2) {
