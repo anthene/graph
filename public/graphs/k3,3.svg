@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="700" style="stroke:black;stroke-width:3;fill:red">
+	<line x1="70" x2="70" y1="70" y2="630"/>
+	<line x1="70" x2="350" y1="70" y2="630"/>
+	<line x1="70" x2="630" y1="70" y2="630"/>
+	<line x1="350" x2="70" y1="70" y2="630"/>
+	<line x1="350" x2="350" y1="70" y2="630"/>
+	<line x1="350" x2="630" y1="70" y2="630"/>
+	<line x1="630" x2="70" y1="70" y2="630"/>
+	<line x1="630" x2="350" y1="70" y2="630"/>
+	<line x1="630" x2="630" y1="70" y2="630"/>
+	<circle cx="70" cy="70" r="7"/>
+	<circle cx="350" cy="70" r="7"/>
+	<circle cx="630" cy="70" r="7"/>
+	<circle cx="70" cy="630" r="7"/>
+	<circle cx="350" cy="630" r="7"/>
+	<circle cx="630" cy="630" r="7"/>
+</svg>

@@ -1,0 +1,3 @@
+<select size="5" ng-model="selectedGraph" ng-options="graph.name for graph in graphs track by graph.name"></select>
+<br/>
+<img src="{{'graphs/'+selectedGraph.name}}" />

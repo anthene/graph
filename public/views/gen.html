@@ -1,0 +1,6 @@
+<form novalidate="">
+	Vertex count: <input type="number" ng-model="vertexCount" min="3" max="23"/><br/>
+	Step: <input type="number" ng-model="step" min="1" max="{{vertexCount/2}}"/><br/>
+	<input type="submit" ng-click="generate()" value="Generate"/>
+</form>
+<img src="{{svg}}" />
