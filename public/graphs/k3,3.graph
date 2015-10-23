@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<graph vertexCount="6" name="k3,3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<vertex x="10" y="10"/>
+	<vertex x="50" y="10"/>
+	<vertex x="90" y="10"/>
+	
+	<vertex x="10" y="90"/>
+	<vertex x="50" y="90"/>
+	<vertex x="90" y="90"/>
+
+	<edge firstVertex="0" secondVertex="3"/>
+	<edge firstVertex="0" secondVertex="4"/>
+	<edge firstVertex="0" secondVertex="5"/>
+
+	<edge firstVertex="1" secondVertex="3"/>
+	<edge firstVertex="1" secondVertex="4"/>
+	<edge firstVertex="1" secondVertex="5"/>
+
+	<edge firstVertex="2" secondVertex="3"/>
+	<edge firstVertex="2" secondVertex="4"/>
+	<edge firstVertex="2" secondVertex="5"/>
+</graph>

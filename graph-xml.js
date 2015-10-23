@@ -1,7 +1,8 @@
 var xml2js = require('xml2js').parseString;
 var Graph = require('./graph');
 
-module.exports = function (xml, callback) {
+module.exports = function() {
+this.deserialize = function (xml, callback) {
 	xml2js(xml, function (error, result) {
 		try {
 			var graph = new Graph(parseInt(result.graph.$.vertexCount), result.graph.$.name);
@@ -24,4 +25,5 @@ module.exports = function (xml, callback) {
 		}
 
 	});
+}
 };

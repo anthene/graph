@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<graph vertexCount="5" name="k5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<edge firstVertex="0" secondVertex="1"/>
+	<edge firstVertex="0" secondVertex="2"/>
+	<edge firstVertex="0" secondVertex="3"/>
+	<edge firstVertex="0" secondVertex="4"/>
+
+	<edge firstVertex="1" secondVertex="2"/>
+	<edge firstVertex="1" secondVertex="3"/>
+	<edge firstVertex="1" secondVertex="4"/>
+
+	<edge firstVertex="2" secondVertex="3"/>
+	<edge firstVertex="2" secondVertex="4"/>
+	
+	<edge firstVertex="3" secondVertex="4"/>
+</graph>

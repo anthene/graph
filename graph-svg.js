@@ -1,8 +1,25 @@
 var js2xmlparser = require('js2xmlparser');
 
-module.exports.toSvg = function (graph) {
-	var scale = { x: 7, y: 7 };
-	var raduis = 1 * scale.x;
+module.exports = function() {
+
+var createSvg = function (width, height, edges, nodes, settings) {
+	return js2xmlparser("svg",
+		{
+			'@':
+			{
+				xmlns: 'http://www.w3.org/2000/svg',
+				width: width,
+				height: height,
+				style: 'stroke:'+settings.color+';stroke-width:3;fill:'+settings.color
+			},
+			line: edges,
+			circle: nodes
+		});
+};
+
+var toSvg = function (graph, settings) {
+	var scale = {x: settings.scale, y: settings.scale};
+	var raduis = settings.radius * scale.x;
 	var width = 100 * scale.x;
 	var height = 100 * scale.y;
 
@@ -27,33 +44,28 @@ module.exports.toSvg = function (graph) {
 		var iCoords = graph.getVertexCoords(i, scale);
 		var jCoords = graph.getVertexCoords(j, scale);
 
-		edges.push({
-			'@': {
+		var stroke = graph.getEdge(i, j).stroke;
+		var edge = {
 				x1: iCoords.x,
 				x2: jCoords.x,
 				y1: iCoords.y,
 				y2: jCoords.y
-			}
+			};
+
+		if (stroke !== undefined)
+			edge.stroke = stroke;
+
+		edges.push({
+			'@': edge
 		});
 	});
 
-	return js2xmlparser("svg",
-		{
-			'@':
-			{
-				xmlns: 'http://www.w3.org/2000/svg',
-				width: width,
-				height: height,
-				style: 'stroke:black;stroke-width:3;fill:red'
-			},
-			line: edges,
-			circle: nodes
-		});
+	return createSvg(width, height, edges, nodes, settings);
 };
 
-module.exports.toLeveledSvg = function (graph, i) {
-	var scale = { x: 7, y: 7 };
-	var raduis = 1 * scale.x;
+var toLeveledSvg = function (graph, i, settings) {
+	var scale = {x: settings.scale, y: settings.scale};
+	var raduis = settings.radius * scale.x;
 	var width = 100 * scale.x;
 	var height = 100 * scale.y;
 
@@ -89,16 +101,14 @@ module.exports.toLeveledSvg = function (graph, i) {
 		});
 	});
 
-	return js2xmlparser("svg",
-		{
-			'@':
-			{
-				xmlns: 'http://www.w3.org/2000/svg',
-				width: width,
-				height: height,
-				style: 'stroke:black;stroke-width:3;fill:red'
-			},
-			line: edges,
-			circle: nodes
-		});
-}
+	return createSvg(width, height, edges, nodes, settings);
+};
+
+	this.serialize = function(graph, settings) {
+
+		if (settings.scheme === "levels")
+			return toLeveledSvg(graph, 0, settings);
+
+		return toSvg(graph, settings);
+	}
+};

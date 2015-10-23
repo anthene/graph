@@ -1,3 +1,19 @@
 <select size="5" ng-model="selectedGraph" ng-options="graph.name for graph in graphs track by graph.name"></select>
 <br/>
-<img src="{{'graphs/'+selectedGraph.name}}" />
+Scale: <input type="number" min="3" max="10" ng-model="scale"/>
+<br/>
+Show bridges: <input type="checkbox" ng-model="showBrigdes"/>
+<br/>
+Color: 
+<select ng-model="selectedColor">
+	<option ng-repeat="color in colors" value="{{color}}">{{color}}</option>
+</select>
+<br/>
+Radius: 
+<select ng-model="selectedRadius">
+	<option ng-repeat="radius in radiuses" value="{{radius}}">{{radius}}</option>
+</select>
+<br/>
+<input type="submit" ng-click="show()" value="Show"/>
+<br/>
+<img src="{{svg}}" />

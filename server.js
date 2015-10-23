@@ -3,7 +3,8 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var GraphGenerator = require('./graph-gen');
-var toSvg = require('./graph-svg').toSvg;
+var GraphXmlSerializer = require('./graph-xml');
+var GraphSvgSerializer = require('./graph-svg');
 
 function guid() {
   function s4() {
@@ -23,21 +24,52 @@ app.get("/graphs", function(req, res) {
 		var graphs = [];
 
 		for (i = 0; i < files.length; i++) {
-			graphs.push({
-				name: files[i]//,
-				//svg: fs.readFileSync(path.join("public/graphs", files[i]), "utf8")
-			})
+			if (path.extname(files[i]) === ".graph")
+				graphs.push({
+					name: files[i]//,
+					//svg: fs.readFileSync(path.join("public/graphs", files[i]), "utf8")
+				})
 		}
 		res.send(graphs);
 	});
 });
 
+app.get("/genSvg", function(req, res) {
+	var fileName = guid();
+	var ser = new GraphXmlSerializer();
+	var svgSer = new GraphSvgSerializer();
+
+	ser.deserialize(fs.readFileSync(path.join("public/graphs", req.query.fileName), "utf8"),
+		function (err, graph) {
+			if (err) throw err;
+
+			if (req.query.showBrigdes === 'true') {
+				var brigdes = graph.getBridges();
+				var i;
+
+				for (i = 0; i < brigdes.length; i++) {
+					graph.setEdge(brigdes[i][0], brigdes[i][1], {stroke: "red"});
+				}
+			}
+
+			fs.writeFile('public/graphs/'+fileName+'.svg',
+				svgSer.serialize(graph, {scale: +req.query.scale, color: req.query.color, radius: +req.query.radius }),
+				function () {
+					res.send('graphs/'+fileName+'.svg');
+				});
+		});
+});
+
 app.get("/petGenerate", function(req, res) {
 	var fileName = guid();
 	var gen = new GraphGenerator();
-	fs.writeFile('public/graphs/'+fileName+'.svg', toSvg(gen.petGenerate(+req.query.vertexCount, +req.query.step)), function () {
-		res.send('graphs/'+fileName+'.svg');
-	});
+	var svgSer = new GraphSvgSerializer();
+
+	fs.writeFile('public/graphs/'+fileName+'.svg',
+		svgSer.serialize(gen.petGenerate(+req.query.vertexCount, +req.query.step), {scale: 3, color: "black", radius: 1 }),
+			function () {
+			res.send('graphs/'+fileName+'.svg');
+		});
 });
 
 app.listen(3000);

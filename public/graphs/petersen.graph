@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<graph vertexCount="10" name="petersen" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<vertex circle="1"/>
+	<vertex circle="1"/>
+	<vertex circle="1"/>
+	<vertex circle="1"/>
+	<vertex circle="1"/>
+	
+	<!--star-->
+	<edge firstVertex="0" secondVertex="2"/>
+	<edge firstVertex="2" secondVertex="4"/>
+	<edge firstVertex="4" secondVertex="1"/>
+	<edge firstVertex="1" secondVertex="3"/>
+	<edge firstVertex="3" secondVertex="0"/>
+	
+	<!--border-->
+	<edge firstVertex="5" secondVertex="6"/>
+	<edge firstVertex="6" secondVertex="7"/>
+	<edge firstVertex="7" secondVertex="8"/>
+	<edge firstVertex="8" secondVertex="9"/>
+	<edge firstVertex="9" secondVertex="5"/>
+	
+	<!--connections-->
+	<edge firstVertex="0" secondVertex="5"/>
+	<edge firstVertex="1" secondVertex="6"/>
+	<edge firstVertex="2" secondVertex="7"/>
+	<edge firstVertex="3" secondVertex="8"/>
+	<edge firstVertex="4" secondVertex="9"/>
+</graph>

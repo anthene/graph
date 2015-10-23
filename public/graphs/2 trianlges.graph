@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<graph vertexCount="6" name="k3,3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<vertex x="10" y="20"/>
+	<vertex x="40" y="50"/>
+	<vertex x="10" y="80"/>
+	
+	<vertex x="90" y="20"/>
+	<vertex x="60" y="50"/>
+	<vertex x="90" y="80"/>
+
+	<edge firstVertex="0" secondVertex="1"/>
+	<edge firstVertex="1" secondVertex="2"/>
+	<edge firstVertex="2" secondVertex="0"/>
+
+	<edge firstVertex="3" secondVertex="4"/>
+	<edge firstVertex="4" secondVertex="5"/>
+	<edge firstVertex="5" secondVertex="3"/>
+
+	<edge firstVertex="1" secondVertex="4"/>
+</graph>
