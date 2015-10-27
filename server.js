@@ -1,3 +1,4 @@
+var Graph = require('./graph');
 var path = require('path');
 var express = require('express');
 var app = express();
@@ -5,6 +6,7 @@ var fs = require('fs');
 var GraphGenerator = require('./graph-gen');
 var GraphXmlSerializer = require('./graph-xml');
 var GraphSvgSerializer = require('./graph-svg');
+var mongoClient = require('mongodb').MongoClient;
 
 function guid() {
   function s4() {
@@ -19,45 +21,47 @@ function guid() {
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/graphs", function(req, res) {
-	fs.readdir("public/graphs", function(err, files) {
-		var i;
-		var graphs = [];
-
-		for (i = 0; i < files.length; i++) {
-			if (path.extname(files[i]) === ".graph")
-				graphs.push({
-					name: files[i]//,
-					//svg: fs.readFileSync(path.join("public/graphs", files[i]), "utf8")
-				})
-		}
-		res.send(graphs);
+	mongoClient.connect("mongodb://localhost:27017/graphs", function(err, db) {
+		if (err) throw err;
+		
+		db.collection('graph').find({}, {name:1, _id:0}).toArray(function(err, items) {
+			if (err) throw err;
+		
+			res.send(items);
+		});
 	});
 });
 
 app.get("/genSvg", function(req, res) {
 	var fileName = guid();
-	var ser = new GraphXmlSerializer();
 	var svgSer = new GraphSvgSerializer();
 
-	ser.deserialize(fs.readFileSync(path.join("public/graphs", req.query.fileName), "utf8"),
-		function (err, graph) {
+	mongoClient.connect("mongodb://localhost:27017/graphs", function(err, db) {
+		if (err) throw err;
+		
+		db.collection('graph').findOne({ name: req.query.fileName }, { _id: 0 }, function(err, graph) {
 			if (err) throw err;
-
+			
+			var gr = new Graph(graph.edges.length, graph.name, graph);
+			
 			if (req.query.showBrigdes === 'true') {
-				var brigdes = graph.getBridges();
+				var brigdes = gr.getBridges();
 				var i;
 
 				for (i = 0; i < brigdes.length; i++) {
-					graph.setEdge(brigdes[i][0], brigdes[i][1], {stroke: "red"});
+					gr.setEdge(brigdes[i][0], brigdes[i][1], {stroke: "red"});
 				}
 			}
-
+			
+			var svg = svgSer.serialize(gr, {scale: +req.query.scale, color: req.query.color, radius: +req.query.radius });
+			
 			fs.writeFile('public/graphs/'+fileName+'.svg',
-				svgSer.serialize(graph, {scale: +req.query.scale, color: req.query.color, radius: +req.query.radius }),
-				function () {
+				svg,
+				function (err, f){
 					res.send('graphs/'+fileName+'.svg');
 				});
 		});
+	});
 });
 
 app.get("/petGenerate", function(req, res) {

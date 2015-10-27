@@ -1,33 +1,34 @@
-var Graph = require('./graph');
-var toSvg = require('./graph-svg').toSvg;
-var fromXml = require('./graph-xml');
-var assert = require('assert');
+var GraphXmlSerializer = require('./graph-xml');
+var xmlSerializer = new GraphXmlSerializer();
 var fs = require('fs');
 var path = require('path');
+var MongoClient = require('mongodb').MongoClient;
 
-var runResultDir = 'run-results';
-if (!fs.existsSync(runResultDir))
-	fs.mkdirSync(runResultDir);
-
-// fromXml
-var testDirName = 'test-data';
-fs.readdir(testDirName, function (err, files) {
+MongoClient.connect("mongodb://localhost:27017/graphs", function(err, db) {
 	if (err) throw err;
 	
-	for (var i = 0; i < files.length; i++) {
-		var file = files[i];
+	db.collection('graph').drop();
+
+	var graphsFolder = "public\\graphs";
+	fs.readdir(graphsFolder, function (err, files) {
+		if (err) throw err;
 		
-		if (path.extname(file) === '.xml') {
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
 			
-			fs.readFile(path.join(testDirName, file), 'utf8', function (err, xml) {
-				if (err) throw err;
+			if (path.extname(file) === '.graph') {
 				
-				fromXml(xml, function (err, graph) {
+				fs.readFile(path.join(graphsFolder, file), 'utf8', function (err, xml) {
 					if (err) throw err;
 					
-					fs.writeFile(path.join(runResultDir, graph.name + '.svg'), toSvg(graph));
+					xmlSerializer.deserialize(xml, function (err, graph) {
+						if (err) throw err;
+						
+						var collection = db.collection('graph');
+						collection.insert(graph);
+					});
 				});
-			});
+			}
 		}
-	}
+	});
 });

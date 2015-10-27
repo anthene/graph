@@ -9,7 +9,11 @@ this.deserialize = function (xml, callback) {
 
 			for (var i = 0; result.graph.vertex && i < result.graph.vertex.length; i++) {
 				var vertex = result.graph.vertex[i].$;
-				graph.setVertex(i, vertex);
+				graph.setVertex(i, {
+					x: vertex.x ? parseInt(vertex.x) : undefined,
+					y: vertex.y ? parseInt(vertex.y) : undefined,
+					circle: vertex.circle ? parseInt(vertex.circle) : undefined
+				});
 				if (vertex.circle)
 					graph.setVertexCircle(i, parseInt(vertex.circle));
 			}

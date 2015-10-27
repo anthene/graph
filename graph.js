@@ -1,9 +1,12 @@
-module.exports = function (vertexCount, name) {
+module.exports = function (vertexCount, name, settings) {
 
 	var i, j;
-	var vertices = [];
+	var verteces = [];
     var edges = [];
     var circles = [[]];
+
+	if (settings && settings.verteces)
+		verteces = settings.verteces;
 
 	for (i = 0; i < vertexCount; i++) {
 		edges[i] = [];
@@ -11,6 +14,9 @@ module.exports = function (vertexCount, name) {
 			edges[i][j] = false;
 		}
 	}
+	
+	if (settings && settings.edges)
+		edges = settings.edges;
 	
 	for (i = 0; i < vertexCount; i++) {
 		circles[0].push(i);
@@ -57,7 +63,7 @@ module.exports = function (vertexCount, name) {
 			enumerable: true,
 			get: (function (i1) {
 				return function() {
-					var vertex = vertices[i1];
+					var vertex = verteces[i1];
 					return {
 						x: vertex ? vertex.x : undefined,
 						y: vertex ? vertex.y : undefined,
@@ -73,7 +79,7 @@ module.exports = function (vertexCount, name) {
         if (i >= vertexCount)
             throw new Error('Vertex index must me less than ' + vertexCount);
 
-		return vertices[i];
+		return verteces[i];
 	};
 
 	this.setVertex = function(i, value) {
@@ -81,7 +87,7 @@ module.exports = function (vertexCount, name) {
         if (i >= vertexCount)
             throw new Error('Vertex index must me less than ' + vertexCount);
 
-		vertices[i] = value;
+		verteces[i] = value;
 		return this;
 	};
 
@@ -221,38 +227,44 @@ module.exports = function (vertexCount, name) {
 
 		throw new Error('Circles damaged.')
 	};
+
+	for (i = 0; i < verteces.length; i++) {
+		if (verteces[i] && verteces[i].circle) {
+			this.setVertexCircle(i, verteces[i].circle);
+		}
+	}
 	
 	this.isConnected = function() {
 		var firstConnectedIndex, i;
-		var checkedVertices = [];
+		var checkedVerteces = [];
 		var connectedAndCheckedCount = 0;
 		var neighbours;
-		checkedVertices[0] = 'connected'; // 'connected' means connected with 0 vertex
+		checkedVerteces[0] = 'connected'; // 'connected' means connected with 0 vertex
 		
 		do {
 			
 			firstConnectedIndex = undefined;
-			for (i = 0; firstConnectedIndex === undefined && i < checkedVertices.length; i++) {
-				if (checkedVertices[i] === 'connected')
+			for (i = 0; firstConnectedIndex === undefined && i < checkedVerteces.length; i++) {
+				if (checkedVerteces[i] === 'connected')
 					firstConnectedIndex = i;
 			}
 			
 			if (firstConnectedIndex !== undefined) {
 				
-				checkedVertices[firstConnectedIndex] = 'connectedAndChecked';
+				checkedVerteces[firstConnectedIndex] = 'connectedAndChecked';
 				
 				neighbours = this.getNeighbours(firstConnectedIndex);
 				
 				for (i = 0; i < neighbours.length; i++) {
-					if (checkedVertices[neighbours[i]] === undefined)
-						checkedVertices[neighbours[i]] = 'connected';
+					if (checkedVerteces[neighbours[i]] === undefined)
+						checkedVerteces[neighbours[i]] = 'connected';
 				}
 			}
 		}
 		while (firstConnectedIndex !== undefined)
 		
-		for (i = 0; i < checkedVertices.length; i++) {
-			if (checkedVertices[i] === 'connectedAndChecked')
+		for (i = 0; i < checkedVerteces.length; i++) {
+			if (checkedVerteces[i] === 'connectedAndChecked')
 				connectedAndCheckedCount++;
 		}
 		
