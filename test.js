@@ -6,11 +6,56 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 
-/*
-var testResultDir = 'test-results';
-if (!fs.existsSync(testResultDir))
-	fs.mkdirSync(testResultDir);
-*/
+var key;
+var properties = [];
+
+// vertexCount
+var graph = new Graph(3);
+assert.strictEqual(graph.vertexCount, 3);
+graph.vertexCount = "yes";
+assert.strictEqual(graph.vertexCount, 3);
+
+// edges
+graph = new Graph(3, "edges test").setEdge(0, 1).setEdge(0, 2);
+assert.strictEqual(graph.edges[0][1], true);
+assert.strictEqual(graph.edges[1][0], true);
+assert.strictEqual(graph.edges[0][2], true);
+assert.strictEqual(graph.edges[2][0], true);
+assert.strictEqual(graph.edges[1][2], false);
+assert.strictEqual(graph.edges[2][1], false);
+graph.edges[0][1] = false;
+graph.edges[0][2] = false;
+graph.edges[2][1] = true;
+assert.strictEqual(graph.edges[0][1], true);
+assert.strictEqual(graph.edges[1][0], true);
+assert.strictEqual(graph.edges[0][2], true);
+assert.strictEqual(graph.edges[2][0], true);
+assert.strictEqual(graph.edges[1][2], false);
+assert.strictEqual(graph.edges[2][1], false);
+
+// verteces
+graph = new Graph(3);
+graph.setVertex(0, {x: 1, y: 2});
+graph.setVertex(1, {});
+graph.setVertex(2, {x: 3, y: 4, circle: 1});
+assert.deepStrictEqual({x: 1, y: 2, circle: 0 }, graph.verteces[0]);
+assert.deepStrictEqual({x: undefined, y: undefined, circle: 0 }, graph.verteces[1]);
+assert.deepStrictEqual({x: 3, y: 4, circle: 1 }, graph.verteces[2]);
+graph.verteces[0] = {x: 5};
+graph.verteces[1] = {};
+graph.verteces[2] = {y: 3};
+assert.deepStrictEqual({x: 1, y: 2, circle: 0 }, graph.verteces[0]);
+assert.deepStrictEqual({x: undefined, y: undefined, circle: 0 }, graph.verteces[1]);
+assert.deepStrictEqual({x: 3, y: 4, circle: 1 }, graph.verteces[2]);
+
+// property list
+graph = new Graph(3);
+for (key in graph) {
+	if (typeof graph[key] !== "function"){
+		properties.push(key);
+	}
+}
+assert.deepEqual(["name", "edges", "verteces"], properties);
 	
 // getVertex
 assert.strictEqual(undefined, new Graph(3).getVertex(2));
@@ -60,19 +105,6 @@ new Graph(4).setEdge(0, 1).setEdge(3, 1).forEachEdge(action);
 assert.deepEqual([[0, 1], [1, 3]], edges);
 
 // getVertex
-/*
-var testDirName = 'test-data'
-fs.readFile(path.join(testDirName, 'k2.xml'), 'utf8', function (err, xml) {
-	if (err) throw err;
-	
-	fromXml(xml, function (err, graph) {
-		if (err) throw err;
-		
-		assert.deepEqual({ x:10, y:10 }, graph.getVertex(0));
-		assert.deepEqual({ x:90, y:90 }, graph.getVertex(1));
-	});
-});
-*/
 
 // getVertexCoords
 assert.deepEqual(
@@ -124,36 +156,3 @@ assert.deepStrictEqual([[0, 1]], new Graph(2).setEdge(0, 1).getBridges());
 assert.deepStrictEqual([[0, 1], [1, 2], [2, 3]], new Graph(4).setEdge(0, 1).setEdge(2, 3).setEdge(1, 2).getBridges());
 
 assert.deepStrictEqual([], new Graph(4).setEdge(0, 1).setEdge(2, 3).setEdge(1, 2).setEdge(0, 3).getBridges());
-
-/*
-// toSvg
-fs.writeFile(path.join(testResultDir, 'graph.svg'), toSvg(new Graph(4).setEdge(0, 1).setEdge(1, 2).setEdge(3, 1).setEdge(2, 3).setEdge(0, 3)));
-
-// toLeveledSvg
-fs.writeFile(path.join(testResultDir, 'levs0.svg'), toLeveledSvg(new Graph(6, 'levs').setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).setEdge(4, 5), 0));
-
-fs.writeFile(path.join(testResultDir, 'levs5.svg'), toLeveledSvg(new Graph(6, 'levs').setEdge(0, 1).setEdge(0, 2).setEdge(1, 3).setEdge(3, 2).setEdge(4, 2).setEdge(4, 5), 5));
-
-fs.readFile(path.join(testDirName, 'k3,3.xml'), 'utf8', function (err, xml) {
-	if (err) throw err;
-	
-	fromXml(xml, function (err, graph) {
-		if (err) throw err;
-		
-		fs.writeFile(path.join(testResultDir, 'k3,3_levs.svg'), toLeveledSvg(graph, 0));
-	});
-});
-*/
-
-/*
-fs.readFile(path.join(testDirName, 'petersen.xml'), 'utf8', function (err, xml) {
-	if (err) throw err;
-	
-	fromXml(xml, function (err, graph) {
-		if (err) throw err;
-		
-		assert.equal(1, graph.getVertexCircle(2));
-		assert.equal(0, graph.getVertexCircle(5));
-	});
-});
-*/
